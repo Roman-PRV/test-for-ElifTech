@@ -1,8 +1,5 @@
 // Функція для збереження питання
 export function saveQuestion(questionId) {
-    alert(1);
-    return;
-
     const form = document.querySelector(
         `[data-question-id='${questionId}'] form`
     );

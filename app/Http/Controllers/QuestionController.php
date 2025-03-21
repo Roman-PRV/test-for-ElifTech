@@ -51,14 +51,29 @@ class QuestionController extends Controller
 
     public function update(Request $request, $id)
     {
-        $question = Question::findOrFail($id);
+        try {
+            // Знаходимо питання за його ID
+            $question = Question::findOrFail($id);
     
-        $question->update([
-            'question' => $request->input('question'),
-            'type_id' => $request->input('type_id'),
-        ]);
+            // Оновлюємо поля питання
+            $question->update([
+                'question' => $request->input('question'),
+                'type_id' => $request->input('type_id'),
+            ]);
     
-        return redirect()->back()->with('success', 'Question updated successfully!');
+            // Успішне збереження
+            return response()->json([
+                'success' => true,
+                'message' => 'Question updated successfully!'
+            ]);
+        } catch (\Exception $e) {
+            // У разі помилки повертаємо опис
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update question.',
+                'error' => $e->getMessage()
+            ], 500); // HTTP статус код для помилок
+        }
     }
 
     public function destroy(Question $question)
