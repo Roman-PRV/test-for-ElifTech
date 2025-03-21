@@ -26,4 +26,6 @@ Route::put('/questions/{id}', [QuestionController::class, 'update'])->name('ques
 
 Route::get('/questions/{question}/answers', [QuestionController::class, 'getAnswers']);
 Route::delete('/questions/{question}', [QuestionController::class, 'destroy'])->name('questions.destroy');
+Route::post('/questions', [QuestionController::class, 'store'])->name('questions.store');
+
 

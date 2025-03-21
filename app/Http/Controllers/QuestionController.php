@@ -29,7 +29,32 @@ class QuestionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+
+            $question = Question::create([
+                'question' => $request->input('question', 'Some text'), 
+                'type_id' => $request->input('type_id', 1), 
+                'quiz_id' => $request->input('quiz_id'),
+            ]);
+    
+            $questionTypes = \App\Models\QuestionType::all();
+            $html = view('questions.question', compact('question',  'questionTypes'))->render();
+    
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Question created successfully!',
+                'html' => $html, 
+                'questionId'=>$question->id, 
+            ]);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to create question.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**
@@ -52,27 +77,23 @@ class QuestionController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            // Знаходимо питання за його ID
             $question = Question::findOrFail($id);
     
-            // Оновлюємо поля питання
             $question->update([
                 'question' => $request->input('question'),
                 'type_id' => $request->input('type_id'),
             ]);
-    
-            // Успішне збереження
             return response()->json([
                 'success' => true,
                 'message' => 'Question updated successfully!'
             ]);
         } catch (\Exception $e) {
-            // У разі помилки повертаємо опис
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to update question.',
                 'error' => $e->getMessage()
-            ], 500); // HTTP статус код для помилок
+            ], 500); 
         }
     }
 

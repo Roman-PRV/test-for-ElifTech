@@ -76,6 +76,68 @@ export function showAnswers(event) {
     }
 }
 
+export function createQuestion(quizId) {
+    const defaultData = {
+        question: "Some text",
+        type_id: 1, 
+        quiz_id: quizId,
+    };
+
+    fetch("/questions", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": document
+                .querySelector('meta[name="csrf-token"]')
+                .getAttribute("content"),
+        },
+        body: JSON.stringify(defaultData),
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.success) {
+                const formContainer = document.querySelector(
+                    "#questions-form-container"
+                );
+                formContainer.insertAdjacentHTML("beforeend", data.html);
+
+                attachListenersToQuestion(data.questionId);
+
+                alert("New question created successfully!");
+            } else {
+                alert("Failed to create a new question.");
+                if (data.error) {
+                    console.error("Server error:", data.error);
+                }
+            }
+        })
+        .catch((error) => {
+            console.error("Error creating question:", error);
+            alert("An error occurred while creating the question.");
+        });
+}
+
+function attachListenersToQuestion(questionId) {
+    const questionElement = document.querySelector(
+        `[data-question-id='${questionId}']`
+    );
+
+    const removeButton = questionElement.querySelector(
+        ".remove-question-button"
+    );
+    removeButton.addEventListener("click", () => {
+        removeQuestion(questionId);     });
+
+    const saveButton = questionElement.querySelector(".save-question-button");
+    saveButton.addEventListener("click", (event) => {
+        event.preventDefault();
+        saveQuestion(questionId); 
+    });
+
+    const typeSelect = questionElement.querySelector(".type-select");
+    typeSelect.addEventListener("change", showAnswers); // Викликаємо функцію для показу відповідей
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".save-question-button").forEach((button) => {
         button.addEventListener("click", function (event) {
@@ -85,7 +147,6 @@ document.addEventListener("DOMContentLoaded", () => {
             saveQuestion(questionId);
         });
     });
-
 
     document.querySelectorAll(".remove-question-button").forEach((button) => {
         button.addEventListener("click", function () {
@@ -98,4 +159,12 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".type-select").forEach((select) => {
         select.addEventListener("change", showAnswers);
     });
+
+    const addQuestionButton = document.getElementById("add-question-button");
+    if (addQuestionButton) {
+        addQuestionButton.addEventListener("click", () => {
+            const quizId = addQuestionButton.dataset.quizId; // Отримуємо quizId із кнопки
+            createQuestion(quizId);
+        });
+    }
 });

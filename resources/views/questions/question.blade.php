@@ -4,7 +4,6 @@
         @method('PUT')
 
         <div class="flex flex-wrap sm:flex-nowrap items-center gap-4">
-
             <input type="text" name="question" value="{{ $question->question }}" class="flex-1 p-2 border rounded-lg"
                 placeholder="Enter question text" />
 
@@ -31,10 +30,10 @@
         </div>
     </form>
 
+    <div id="answers-container-{{ $question->id }}" class="mt-4 {{ $question->type_id == 1 ? 'hidden' : '' }}">
+        @include('answers.answers', ['answers' => $question->answers])
+    </div>
 
-    @if ($question->type_id == 2 || $question->type_id == 3)
-        <div id="answers-container-{{ $question->id }}" class="mt-4">
-            @include('answers.answers', ['answers' => $question->answers])
-        </div>
-    @endif
+
+
 </div>
