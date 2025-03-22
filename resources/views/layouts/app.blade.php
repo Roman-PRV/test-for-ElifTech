@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title', 'My Application')</title>
+    <title>@yield('title', 'Questionnaire Builder App')</title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     --
@@ -15,8 +15,11 @@
 
 <body class="bg-gray-100">
     <header class="bg-blue-600 text-white p-4">
-        <div class="container mx-auto">
-            <h1 class="text-lg font-bold">My Application</h1>
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-lg font-bold">Questionnaire Builder App</h1>
+            <a href="/quizzes" class="bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-gray-200">
+                Catalog
+            </a>
         </div>
     </header>
 
@@ -27,7 +30,7 @@
 
     <footer class="bg-blue-600 text-white p-4 mt-6">
         <div class="container mx-auto text-center">
-            <p>&copy; {{ date('Y') }} My Application. All rights reserved.</p>
+            <p>&copy; {{ date('Y') }} Questionnaire Builder App</p>
         </div>
     </footer>
 

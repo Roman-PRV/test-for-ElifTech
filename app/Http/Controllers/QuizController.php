@@ -65,8 +65,27 @@ class QuizController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Quiz $quiz)
-    {
-        //
+public function destroy(Quiz $quiz)
+{
+    try {
+
+        $quiz->delete();
+
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Quiz deleted successfully!',
+        ]);
+    } catch (\Exception $e) {
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to delete quiz.',
+            'error' => $e->getMessage(),
+        ], 500);
     }
+}
+
+
+    
 }

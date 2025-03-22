@@ -118,7 +118,7 @@ function attachListenersToAnswer(answerId) {
     const answerElement = document.querySelector(
         `[data-answer-id='${answerId}']`
     );
-    console.log(answerElement);
+
     const removeButton = answerElement.querySelector(".remove-answer-button");
     removeButton.addEventListener("click", () => {
         removeAnswer(answerId);

@@ -33,6 +33,9 @@ Route::post('/answers', [AnswerController::class, 'store'])->name('answers.store
 Route::delete('/answers/{answer}', [AnswerController::class, 'destroy'])->name('answers.destroy');
 Route::put('/answers/{answer}', [AnswerController::class, 'update'])->name('answers.update');
 
+Route::match(['POST', 'PUT'], '/quiz/{quizId?}', [QuizController::class, 'saveQuiz'])->name('quiz.save');
+Route::delete('/quizzes/{id}', [QuizController::class, 'destroy'])->name('quizzes.destroy');
+
 
 
 
