@@ -26,8 +26,10 @@
                             class="absolute right-0 mt-2 w-32 bg-white rounded-md shadow-lg hidden group-focus-within:block">
                             <a href="/quizzes/{{ $quiz->id }}"
                                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Edit</a>
-                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Run</a>
-                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 quiz-deletу-button">Delete</a>
+                            <a href="#"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 quiz-run-button">Run</a>
+                            <a href="#"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 quiz-deletу-button">Delete</a>
                         </div>
                     </div>
                 </div>

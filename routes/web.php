@@ -4,6 +4,7 @@ use App\Http\Controllers\AnswerController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\QuestionController;
+use App\Http\Controllers\CompletionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,5 +38,9 @@ Route::match(['POST', 'PUT'], '/quiz/{quizId?}', [QuizController::class, 'saveQu
 Route::delete('/quizzes/{id}', [QuizController::class, 'destroy'])->name('quizzes.destroy');
 
 
+
+
+Route::resource('completions', CompletionController::class);
+Route::post('/completions/{completion}/submit', [CompletionController::class, 'submit'])->name('completion.submit');
 
 
