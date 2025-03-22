@@ -28,8 +28,33 @@ class AnswerController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            // Створюємо нову відповідь
+            $answer = Answer::create([
+                'question_id' => $request->input('question_id'),
+                'answer' => $request->input('answer', 'Some text') // Значення за замовчуванням
+            ]);
+    
+            // Рендеримо шаблон для нової відповіді
+            $html = view('answers.answer', compact('answer'))->render();
+    
+            // Успішна відповідь із рендереним HTML
+            return response()->json([
+                'success' => true,
+                'message' => 'Answer created successfully!',
+                'html' => $html, // HTML для відповіді
+                'answerId' => $answer->id // Дані нової відповіді
+            ]);
+        } catch (\Exception $e) {
+            // У разі помилки
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to create answer.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
+    
 
     /**
      * Display the specified resource.
@@ -52,14 +77,46 @@ class AnswerController extends Controller
      */
     public function update(Request $request, Answer $answer)
     {
-        //
+        try {
+            $answer->update([
+                'answer' => $request->input('answer'),
+            ]);
+    
+            return response()->json([
+                'success' => true,
+                'message' => 'Answer updated successfully!',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update answer.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
+    
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Answer $answer)
     {
-        //
+        try {
+            $answer->delete();
+    
+            return response()->json([
+                'success' => true,
+                'message' => 'Answer deleted successfully!',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to delete answer.',
+                'error' => $e->getMessage(),
+            ], 500); 
+        }
     }
+    
+
+    
 }

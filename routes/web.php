@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnswerController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\QuestionController;
@@ -27,5 +28,11 @@ Route::put('/questions/{id}', [QuestionController::class, 'update'])->name('ques
 Route::get('/questions/{question}/answers', [QuestionController::class, 'getAnswers']);
 Route::delete('/questions/{question}', [QuestionController::class, 'destroy'])->name('questions.destroy');
 Route::post('/questions', [QuestionController::class, 'store'])->name('questions.store');
+
+Route::post('/answers', [AnswerController::class, 'store'])->name('answers.store');
+Route::delete('/answers/{answer}', [AnswerController::class, 'destroy'])->name('answers.destroy');
+Route::put('/answers/{answer}', [AnswerController::class, 'update'])->name('answers.update');
+
+
 
 

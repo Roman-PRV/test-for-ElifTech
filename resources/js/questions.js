@@ -79,7 +79,7 @@ export function showAnswers(event) {
 export function createQuestion(quizId) {
     const defaultData = {
         question: "Some text",
-        type_id: 1, 
+        type_id: 1,
         quiz_id: quizId,
     };
 
@@ -126,16 +126,17 @@ function attachListenersToQuestion(questionId) {
         ".remove-question-button"
     );
     removeButton.addEventListener("click", () => {
-        removeQuestion(questionId);     });
+        removeQuestion(questionId);
+    });
 
     const saveButton = questionElement.querySelector(".save-question-button");
     saveButton.addEventListener("click", (event) => {
         event.preventDefault();
-        saveQuestion(questionId); 
+        saveQuestion(questionId);
     });
 
     const typeSelect = questionElement.querySelector(".type-select");
-    typeSelect.addEventListener("change", showAnswers); // Викликаємо функцію для показу відповідей
+    typeSelect.addEventListener("change", showAnswers);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
