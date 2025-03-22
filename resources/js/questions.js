@@ -1,31 +1,5 @@
 // Функція для збереження питання
-export function saveQuestion(questionId) {
-    const form = document.querySelector(
-        `[data-question-id='${questionId}'] form`
-    );
-    const formData = new FormData(form);
-
-    fetch(form.action, {
-        method: "POST",
-        body: formData,
-        headers: {
-            "X-CSRF-TOKEN": document
-                .querySelector('meta[name="csrf-token"]')
-                .getAttribute("content"),
-        },
-    })
-        .then((response) => {
-            if (response.ok) {
-                alert("Question saved successfully!");
-            } else {
-                alert("Failed to save the question.");
-            }
-        })
-        .catch((error) => {
-            console.error("Error saving question:", error);
-            alert("An error occurred while saving the question.");
-        });
-}
+import { addAnswer } from "./answers";
 
 export function removeQuestion(questionId) {
     const confirmation = confirm(
@@ -33,33 +7,10 @@ export function removeQuestion(questionId) {
     );
     if (!confirmation) return;
 
-    fetch(`/questions/${questionId}`, {
-        method: "DELETE",
-        headers: {
-            "X-CSRF-TOKEN": document
-                .querySelector('meta[name="csrf-token"]')
-                .getAttribute("content"),
-        },
-    })
-        .then((response) => response.json())
-        .then((data) => {
-            if (data.success) {
-                const questionContainer = document.querySelector(
-                    `[data-question-id='${questionId}']`
-                );
-                questionContainer.remove();
-                alert(data.message);
-            } else {
-                alert(data.message || "Failed to remove the question.");
-                if (data.error) {
-                    console.error("Server error:", data.error);
-                }
-            }
-        })
-        .catch((error) => {
-            console.error("Error removing question:", error);
-            alert("An error occurred while removing the question.");
-        });
+    const questionContainer = document.querySelector(
+        `[data-question-id='${questionId}']`
+    );
+    questionContainer.remove();
 }
 
 export function showAnswers(event) {
@@ -129,26 +80,17 @@ function attachListenersToQuestion(questionId) {
         removeQuestion(questionId);
     });
 
-    const saveButton = questionElement.querySelector(".save-question-button");
-    saveButton.addEventListener("click", (event) => {
-        event.preventDefault();
-        saveQuestion(questionId);
-    });
-
     const typeSelect = questionElement.querySelector(".type-select");
     typeSelect.addEventListener("change", showAnswers);
+
+    questionElement
+        .querySelector(".add-answer-button")
+        .addEventListener("click", function () {
+            addAnswer(questionId);
+        });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll(".save-question-button").forEach((button) => {
-        button.addEventListener("click", function (event) {
-            event.preventDefault();
-            const questionId =
-                this.closest("[data-question-id]").dataset.questionId;
-            saveQuestion(questionId);
-        });
-    });
-
     document.querySelectorAll(".remove-question-button").forEach((button) => {
         button.addEventListener("click", function () {
             const questionId =

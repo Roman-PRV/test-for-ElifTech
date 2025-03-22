@@ -58,9 +58,83 @@ class QuizController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, Quiz $quiz)
-    {
-        //
+{
+    // Валідація запиту
+    $validatedData = $request->validate([
+        'questions' => 'required|array',
+        'questions.*.question' => 'required|string',
+        'questions.*.type_id' => 'required|integer',
+        'questions.*.answers' => 'nullable|array',
+        'questions.*.answers.*' => 'required|string',
+    ]);
+
+    try {
+        // Отримуємо всі існуючі питання вікторини
+        $existingQuestions = $quiz->questions;
+
+        // Масив для відстеження збережених ID питань
+        $processedQuestionIds = [];
+
+        // Обробка питань із запиту
+        foreach ($validatedData['questions'] as $questionId => $questionData) {
+            // Оновлення або створення питання
+            $question = $quiz->questions()->updateOrCreate(
+                ['id' => $questionId], // Шукаємо питання за ID
+                [
+                    'quiz_id' => $quiz->id,
+                    'question' => $questionData['question'],
+                    'type_id' => $questionData['type_id'],
+                ]
+            );
+
+            // Відстежуємо ID оброблених питань
+            $processedQuestionIds[] = $question->id;
+
+            // Отримуємо існуючі відповіді для питання
+            $existingAnswers = $question->answers;
+
+            // Масив для відстеження збережених ID відповідей
+            $processedAnswerIds = [];
+
+            if (!empty($questionData['answers'])) {
+                foreach ($questionData['answers'] as $answerId => $answerText) {
+                    // Оновлення або створення відповіді
+                    $answer = $question->answers()->updateOrCreate(
+                        ['id' => $answerId], // Шукаємо відповідь за ID
+                        ['answer' => $answerText]
+                    );
+
+                    // Відстежуємо ID оброблених відповідей
+                    $processedAnswerIds[] = $answer->id;
+                }
+            }
+
+            // Видалення відповідей, які не були в запиті
+            $existingAnswers->whereNotIn('id', $processedAnswerIds)->each(function ($answer) {
+                $answer->delete();
+            });
+        }
+
+        // Видалення питань, які не були в запиті
+        $existingQuestions->whereNotIn('id', $processedQuestionIds)->each(function ($question) {
+            $question->answers()->delete(); // Видаляємо відповіді пов'язаного питання
+            $question->delete();
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Quiz updated successfully!',
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'An error occurred while updating the quiz.',
+            'error' => $e->getMessage(),
+        ], 500);
     }
+}
+
+    
 
     /**
      * Remove the specified resource from storage.
@@ -68,10 +142,7 @@ class QuizController extends Controller
 public function destroy(Quiz $quiz)
 {
     try {
-
         $quiz->delete();
-
-
         return response()->json([
             'success' => true,
             'message' => 'Quiz deleted successfully!',

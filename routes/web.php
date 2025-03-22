@@ -24,6 +24,7 @@ Route::get('/', function () {
 Route::get('/quizzes', [QuizController::class, 'index']);
 Route::get('/quizzes/{quiz}', [QuizController::class, 'show']);
 Route::post('/quizzes/{quiz}', [QuizController::class, 'update'])->name('quizzes.updateQuestions');
+Route::put('/quizzes/{quiz}', [QuizController::class, 'update'])->name('quiz.update');
 Route::put('/questions/{id}', [QuestionController::class, 'update'])->name('questions.update');
 
 Route::get('/questions/{question}/answers', [QuestionController::class, 'getAnswers']);

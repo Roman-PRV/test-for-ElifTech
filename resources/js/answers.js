@@ -16,6 +16,7 @@ export function addAnswer(questionId) {
     })
         .then((response) => response.json())
         .then((data) => {
+            console.log(data);
             if (data.success) {
                 const answersContainer = document.getElementById(
                     `add-answer-button-container-${questionId}`
@@ -44,74 +45,12 @@ export function removeAnswer(answerId) {
     );
     if (!confirmation) return;
 
-    fetch(`/answers/${answerId}`, {
-        method: "DELETE",
-        headers: {
-            "X-CSRF-TOKEN": document
-                .querySelector('meta[name="csrf-token"]')
-                .getAttribute("content"),
-        },
-    })
-        .then((response) => response.json())
-        .then((data) => {
-            if (data.success) {
-                const answerElement = document
-                    .querySelector(`[name="answers[${answerId}]"]`)
-                    .closest("div");
-                answerElement.remove();
-
-                alert("Answer deleted successfully!");
-            } else {
-                alert("Failed to delete the answer.");
-                if (data.error) {
-                    console.error("Server error:", data.error);
-                }
-            }
-        })
-        .catch((error) => {
-            console.error("Error deleting answer:", error);
-            alert("An error occurred while deleting the answer.");
-        });
-}
-
-export function saveAnswer(answerId) {
-    const answerInput = document.querySelector(
-        `input[name="answers[${answerId}]"]`
+    const answerElement = document.querySelector(
+        `[data-answer-id="${answerId}"]`
     );
-    if (!answerInput) {
-        alert("Answer input field not found.");
-        return;
-    }
+    answerElement.remove();
 
-    const requestData = {
-        answer: answerInput.value,
-    };
-
-    fetch(`/answers/${answerId}`, {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRF-TOKEN": document
-                .querySelector('meta[name="csrf-token"]')
-                .getAttribute("content"),
-        },
-        body: JSON.stringify(requestData),
-    })
-        .then((response) => response.json())
-        .then((data) => {
-            if (data.success) {
-                alert("Answer saved successfully!");
-            } else {
-                alert("Failed to save the answer.");
-                if (data.error) {
-                    console.error("Server error:", data.error);
-                }
-            }
-        })
-        .catch((error) => {
-            console.error("Error saving answer:", error);
-            alert("An error occurred while saving the answer.");
-        });
+    alert("Answer deleted successfully!");
 }
 
 function attachListenersToAnswer(answerId) {
@@ -124,22 +63,10 @@ function attachListenersToAnswer(answerId) {
         removeAnswer(answerId);
     });
 
-    const saveButton = answerElement.querySelector(".save-answer-button");
-    saveButton.addEventListener("click", (event) => {
-        event.preventDefault();
-        saveAnswer(answerId);
-    });
+    
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll(".save-answer-button").forEach((button) => {
-        button.addEventListener("click", function (event) {
-            event.preventDefault();
-            const answerId = this.closest("[data-answer-id]").dataset.answerId;
-            saveAnswer(answerId);
-        });
-    });
-
     document.querySelectorAll(".remove-answer-button").forEach((button) => {
         button.addEventListener("click", function () {
             const answerId = this.closest("[data-answer-id]").dataset.answerId;

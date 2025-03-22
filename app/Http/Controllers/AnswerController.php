@@ -32,7 +32,7 @@ class AnswerController extends Controller
             // Створюємо нову відповідь
             $answer = Answer::create([
                 'question_id' => $request->input('question_id'),
-                'answer' => $request->input('answer', 'Some text') // Значення за замовчуванням
+                'answer' => 'Some text'
             ]);
     
             // Рендеримо шаблон для нової відповіді
