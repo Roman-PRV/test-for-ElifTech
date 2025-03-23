@@ -1,5 +1,7 @@
 // Функція для збереження питання
 import { addAnswer } from "./answers";
+import Toastify from "toastify-js";
+import "toastify-js/src/toastify.css";
 
 export function removeQuestion(questionId) {
     const confirmation = confirm(
@@ -53,10 +55,15 @@ export function createQuestion(quizId) {
                 formContainer.insertAdjacentHTML("beforeend", data.html);
 
                 attachListenersToQuestion(data.questionId);
-
-                alert("New question created successfully!");
+                Toastify({
+                    text: "New question created successfully!",
+                    backgroundColor: "green",
+                }).showToast();
             } else {
-                alert("Failed to create a new question.");
+                Toastify({
+                    text: "Failed to create a new question.",
+                    backgroundColor: "red",
+                }).showToast();
                 if (data.error) {
                     console.error("Server error:", data.error);
                 }
@@ -64,7 +71,10 @@ export function createQuestion(quizId) {
         })
         .catch((error) => {
             console.error("Error creating question:", error);
-            alert("An error occurred while creating the question.");
+            Toastify({
+                text: "An error occurred while creating the question.",
+                backgroundColor: "red",
+            }).showToast();
         });
 }
 

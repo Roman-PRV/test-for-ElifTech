@@ -1,3 +1,6 @@
+import Toastify from "toastify-js";
+import "toastify-js/src/toastify.css";
+
 export function addAnswer(questionId) {
     const requestData = {
         question_id: questionId,
@@ -24,10 +27,16 @@ export function addAnswer(questionId) {
                 answersContainer.insertAdjacentHTML("beforebegin", data.html); // Вставляємо HTML в контейнер
 
                 attachListenersToAnswer(data.answerId);
-
-                alert("New answer created successfully!");
+                Toastify({
+                    text: "New answer created successfully!",
+                    backgroundColor: "green",
+                }).showToast();
             } else {
-                alert("Failed to create a new answer.");
+                Toastify({
+                    text: "Failed to create a new answer.",
+                    backgroundColor: "red",
+                }).showToast();
+
                 if (data.error) {
                     console.error("Server error:", data.error);
                 }
@@ -35,7 +44,10 @@ export function addAnswer(questionId) {
         })
         .catch((error) => {
             console.error("Error creating answer:", error);
-            alert("An error occurred while creating the answer.");
+            Toastify({
+                text: "An error occurred while creating the answer.",
+                backgroundColor: "red",
+            }).showToast();
         });
 }
 
@@ -49,8 +61,10 @@ export function removeAnswer(answerId) {
         `[data-answer-id="${answerId}"]`
     );
     answerElement.remove();
-
-    alert("Answer deleted successfully!");
+    Toastify({
+        text: "Answer deleted successfully!",
+        backgroundColor: "green",
+    }).showToast();
 }
 
 function attachListenersToAnswer(answerId) {
@@ -62,8 +76,6 @@ function attachListenersToAnswer(answerId) {
     removeButton.addEventListener("click", () => {
         removeAnswer(answerId);
     });
-
-    
 }
 
 document.addEventListener("DOMContentLoaded", () => {

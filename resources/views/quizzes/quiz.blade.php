@@ -3,11 +3,12 @@
 @section('title', 'Quizzes')
 
 @section('content')
-    <h1 class="text-2xl font-bold mb-6 text-center">Questions for Quiz: {{ $quiz->name }}</h1>
+   
     <div id="questions-form-container">
         <form id="quiz-form" action="{{ route('quiz.update', $quiz->id) }}" method="POST">
             @csrf
             @method('PUT')
+            <h1 class="text-2xl font-bold mb-6 text-center">Questions for Quiz: {{ $quiz->name }}</h1>
             @foreach ($quiz->questions as $question)
                 @include('questions.question', ['question' => $question])
             @endforeach

@@ -59,7 +59,8 @@ class QuizController extends Controller
      */
     public function update(Request $request, Quiz $quiz)
 {
-    // Валідація запиту
+
+
     $validatedData = $request->validate([
         'questions' => 'required|array',
         'questions.*.question' => 'required|string',
@@ -68,57 +69,45 @@ class QuizController extends Controller
         'questions.*.answers.*' => 'required|string',
     ]);
 
+
     try {
-        // Отримуємо всі існуючі питання вікторини
         $existingQuestions = $quiz->questions;
 
-        // Масив для відстеження збережених ID питань
         $processedQuestionIds = [];
 
-        // Обробка питань із запиту
         foreach ($validatedData['questions'] as $questionId => $questionData) {
-            // Оновлення або створення питання
             $question = $quiz->questions()->updateOrCreate(
-                ['id' => $questionId], // Шукаємо питання за ID
-                [
+                ['id' => $questionId],                 [
                     'quiz_id' => $quiz->id,
                     'question' => $questionData['question'],
                     'type_id' => $questionData['type_id'],
                 ]
             );
 
-            // Відстежуємо ID оброблених питань
             $processedQuestionIds[] = $question->id;
 
-            // Отримуємо існуючі відповіді для питання
             $existingAnswers = $question->answers;
 
-            // Масив для відстеження збережених ID відповідей
             $processedAnswerIds = [];
 
             if (!empty($questionData['answers'])) {
                 foreach ($questionData['answers'] as $answerId => $answerText) {
-                    // Оновлення або створення відповіді
                     $answer = $question->answers()->updateOrCreate(
-                        ['id' => $answerId], // Шукаємо відповідь за ID
+                        ['id' => $answerId],
                         ['answer' => $answerText]
                     );
 
-                    // Відстежуємо ID оброблених відповідей
                     $processedAnswerIds[] = $answer->id;
                 }
             }
 
-            // Видалення відповідей, які не були в запиті
             $existingAnswers->whereNotIn('id', $processedAnswerIds)->each(function ($answer) {
                 $answer->delete();
             });
         }
 
-        // Видалення питань, які не були в запиті
         $existingQuestions->whereNotIn('id', $processedQuestionIds)->each(function ($question) {
-            $question->answers()->delete(); // Видаляємо відповіді пов'язаного питання
-            $question->delete();
+            $question->answers()->delete(); 
         });
 
         return response()->json([
