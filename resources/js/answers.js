@@ -52,10 +52,7 @@ export function addAnswer(questionId) {
 }
 
 export function removeAnswer(answerId) {
-    const confirmation = confirm(
-        "Are you sure you want to delete this answer?"
-    );
-    if (!confirmation) return;
+
 
     const answerElement = document.querySelector(
         `[data-answer-id="${answerId}"]`

@@ -137,7 +137,6 @@ public function destroy(Quiz $quiz)
             'message' => 'Quiz deleted successfully!',
         ]);
     } catch (\Exception $e) {
-
         return response()->json([
             'success' => false,
             'message' => 'Failed to delete quiz.',

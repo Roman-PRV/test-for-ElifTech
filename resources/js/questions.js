@@ -4,11 +4,6 @@ import Toastify from "toastify-js";
 import "toastify-js/src/toastify.css";
 
 export function removeQuestion(questionId) {
-    const confirmation = confirm(
-        "Are you sure you want to remove this question?"
-    );
-    if (!confirmation) return;
-
     const questionContainer = document.querySelector(
         `[data-question-id='${questionId}']`
     );

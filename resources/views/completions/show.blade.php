@@ -5,6 +5,9 @@
 @section('content')
     <!-- Заголовок з назвою вікторини -->
     <h1 class="text-2xl font-bold mb-6 text-center">Quiz Results: {{ $completion->quiz->name }}</h1>
+    <h2 class="text-xl font-bold mb-6 text-center">Time to complete: {{ $differenceInMinutes }} minutes </h2>
+
+
 
     <!-- Перелік питань та відповідей -->
     <div class="bg-gray-100 p-6 rounded-lg shadow-md">

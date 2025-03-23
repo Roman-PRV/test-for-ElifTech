@@ -1,9 +1,9 @@
 import Toastify from "toastify-js";
 import "toastify-js/src/toastify.css";
+import { askPermission } from "./heplers";
 
 export function deleteQuiz(quizId, quizElement) {
-    const confirmation = confirm("Are you sure you want to delete this quiz?");
-    if (!confirmation) return;
+    console.log(quizId);
 
     fetch(`/quizzes/${quizId}`, {
         method: "DELETE",
@@ -18,7 +18,7 @@ export function deleteQuiz(quizId, quizElement) {
             if (data.success) {
                 quizElement.remove();
                 Toastify({
-                    text: "Quiz deleted successfully!",
+                    text: data.message,
                     backgroundColor: "green",
                 }).showToast();
             } else {
@@ -131,7 +131,6 @@ document.addEventListener("DOMContentLoaded", () => {
         deleteButton.addEventListener("click", function (event) {
             event.preventDefault();
             const quizId = quizContainer.dataset.quizId;
-            console.log(quizId);
             if (!quizId) {
                 Toastify({
                     text: "Quiz ID not found.",

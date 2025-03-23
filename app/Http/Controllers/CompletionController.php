@@ -71,7 +71,12 @@ class CompletionController extends Controller
      */
     public function show(Completion $completion)
     {
-        return view('completions.show',compact('completion'));
+
+        $date1 = Carbon::parse($completion->start); 
+        $date2 = Carbon::parse($completion->finish); 
+        $differenceInMinutes = $date1->diffInMinutes($date2);
+
+        return view('completions.show',compact('completion','differenceInMinutes'));
         //
     }
 
