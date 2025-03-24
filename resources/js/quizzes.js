@@ -108,6 +108,18 @@ function submitQuizForm() {
                     text: data.message,
                     backgroundColor: "green",
                 }).showToast();
+            } else if (data.errors) {
+                // Вивести конкретні помилки валідації
+                const errorMessages = Object.values(data.errors)
+                    .flat()
+                    .join("\n"); // Об'єднуємо всі помилки в текст
+
+                Toastify({
+                    text: "Validation errors:\n" + errorMessages,
+                    backgroundColor: "red",
+                }).showToast();
+
+                console.error("Validation errors:", data.errors);
             } else {
                 Toastify({
                     text: "Error: " + data.message,

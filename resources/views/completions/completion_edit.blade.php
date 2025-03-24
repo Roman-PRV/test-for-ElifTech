@@ -4,19 +4,17 @@
 
 @section('content')
     <h1 class="text-2xl font-bold mb-6 text-center">Quiz: {{ $completion->quiz->name }}</h1>
-    <form action="{{ route('completion.submit', $completion->id) }}" method="POST">
+    <form action="{{ route('completion.update', $completion->id) }}" method="POST">
         @csrf
-        <!-- Відображення питань -->
+        @method('PUT')
         @foreach ($completion->quiz->questions as $question)
             <div class="bg-white rounded-lg shadow-md p-4 mb-6">
                 <h2 class="text-lg font-semibold mb-4">{{ $question->question }}</h2>
 
                 @if ($question->type_id == 1)
-                    <!-- Text -->
                     <input type="text" name="answers[{{ $question->id }}]" class="w-full p-2 border rounded-lg"
                         placeholder="Enter your answer">
                 @elseif ($question->type_id == 2)
-                    <!-- Single Choice -->
                     @foreach ($question->answers as $answer)
                         <div class="mb-2">
                             <label class="inline-flex items-center">
@@ -27,7 +25,6 @@
                         </div>
                     @endforeach
                 @elseif ($question->type_id == 3)
-                    <!-- Multiple Choice -->
                     @foreach ($question->answers as $answer)
                         <div class="mb-2">
                             <label class="inline-flex items-center">
@@ -41,7 +38,6 @@
             </div>
         @endforeach
 
-        <!-- Кнопка Submit -->
         <div class="flex justify-center">
             <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600">
                 Submit

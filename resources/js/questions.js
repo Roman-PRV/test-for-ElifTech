@@ -44,10 +44,8 @@ export function createQuestion(quizId) {
         .then((response) => response.json())
         .then((data) => {
             if (data.success) {
-                const formContainer = document.querySelector(
-                    "#questions-form-container"
-                );
-                formContainer.insertAdjacentHTML("beforeend", data.html);
+                const quizForm = document.querySelector("#quiz-form");
+                quizForm.insertAdjacentHTML("beforeend", data.html);
 
                 attachListenersToQuestion(data.questionId);
                 Toastify({

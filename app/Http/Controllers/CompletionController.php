@@ -76,7 +76,7 @@ class CompletionController extends Controller
         $date2 = Carbon::parse($completion->finish); 
         $differenceInMinutes = $date1->diffInMinutes($date2);
 
-        return view('completions.show',compact('completion','differenceInMinutes'));
+        return view('completions.completion_show',compact('completion','differenceInMinutes'));
         //
     }
 
@@ -85,7 +85,7 @@ class CompletionController extends Controller
      */
     public function edit(Completion $completion)
     {
-        return view('completions.completions', compact('completion'));
+        return view('completions.completion_edit', compact('completion'));
         //
     }
 
@@ -94,7 +94,50 @@ class CompletionController extends Controller
      */
     public function update(Request $request, Completion $completion)
     {
-        //
+        $validated = $request->validate([
+            'answers' => 'required|array',
+    
+        ]);
+    
+        try {
+    
+            $completion->update(['finish'=>now()]);
+            foreach ($completion->quiz->questions as $question) {
+                            
+                if (isset($validated['answers'][$question->id])) {
+                
+                    $answerValue = $validated['answers'][$question->id];
+                    $completionQuestion = CompletionQuestion::create([
+                        'completion_id' => $completion->id,
+                        'question_description' => $question->question,
+                    ]);
+                    
+    
+                    if (is_array($answerValue)) {
+                        foreach ($answerValue as $answer) {
+    
+                            CompletionAnswer::create([
+                                'completion_question_id' => $completionQuestion->id,
+                                'answer' => $answer ,
+                            ]);
+                        }
+                    } else {
+                        CompletionAnswer::create([
+                            'completion_question_id' => $completionQuestion->id,
+                            'answer' => $answerValue,
+                        ]);
+                    }
+                }
+            }
+    
+            return redirect()->route('completions.show', $completion->id)
+                             ->with('success', 'Quiz completed successfully!');
+        } catch (\Exception $e) {
+            dd($e->getMessage());
+            return redirect()->back()->withErrors([
+                'error' => 'An error occurred while saving your responses.',
+            ])->withInput();
+        }
     }
 
     /**
@@ -107,60 +150,7 @@ class CompletionController extends Controller
 
     public function submit(Request $request, Completion $completion)
     {
-    // Валідація відповідей
-    $validated = $request->validate([
-        'answers' => 'required|array',
-
-    ]);
-   // dd($validated);
-
-    try {
-
-        $completion->update(['finish'=>now()]);
-        // Створення запису у таблиці `completions`
-        // Збереження питань та відповідей
-        foreach ($completion->quiz->questions as $question) {
-                        
-            if (isset($validated['answers'][$question->id])) {
-            
-                $answerValue = $validated['answers'][$question->id];
-                
-                // Додаємо питання в `completion_questions`
-              // dd($completion->id, $question->question);
-                $completionQuestion = CompletionQuestion::create([
-                    'completion_id' => $completion->id,
-                    'question_description' => $question->question,
-                ]);
-                
-
-                // Зберігаємо відповіді в `completion_answers`
-                if (is_array($answerValue)) { // Якщо це multiple choice
-                    foreach ($answerValue as $answer) {
-
-                        CompletionAnswer::create([
-                            'completion_question_id' => $completionQuestion->id,
-                            'answer' => $answer ,
-                        ]);
-                    }
-                } else { // Для текстових або одиночних відповідей
-                    CompletionAnswer::create([
-                        'completion_question_id' => $completionQuestion->id,
-                        'answer' => $answerValue,
-                    ]);
-                }
-            }
-        }
-
-        // Перенаправлення на сторінку з результатами
-        return redirect()->route('completions.show', $completion->id)
-                         ->with('success', 'Quiz completed successfully!');
-    } catch (\Exception $e) {
-        // Обробка помилок
-        dd($e->getMessage());
-        return redirect()->back()->withErrors([
-            'error' => 'An error occurred while saving your responses.',
-        ])->withInput();
-    }
+   
 }
 
 }

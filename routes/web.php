@@ -18,33 +18,39 @@ use App\Http\Controllers\CompletionController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    //ToDo login
+
+    return redirect()->route('quizzes.index');
 });
 
-Route::get('/quizzes', [QuizController::class, 'index']);
-Route::get('/quizzes/{quiz}', [QuizController::class, 'show']);
-Route::delete('/quizzes/{quiz}', [QuizController::class, 'destroy'])->name('quizzes.destroy');
+Route::resource('quizzes', QuizController::class)->names([
+    'index' => 'quizzes.index',
+    'create' => 'quizzes.create',
+    'store' => 'quizzes.store',
+    'show' => 'quizzes.show',
+    'edit' => 'quizzes.edit',
+    'update' => 'quizzes.update',
+    'destroy' => 'quizzes.destroy',
+]);;
 
 
-Route::post('/quizzes/{quiz}', [QuizController::class, 'update'])->name('quizzes.updateQuestions');
-Route::put('/quizzes/{quiz}', [QuizController::class, 'update'])->name('quiz.update');
-Route::put('/questions/{id}', [QuestionController::class, 'update'])->name('questions.update');
-
-Route::get('/questions/{question}/answers', [QuestionController::class, 'getAnswers']);
-Route::delete('/questions/{question}', [QuestionController::class, 'destroy'])->name('questions.destroy');
-Route::post('/questions', [QuestionController::class, 'store'])->name('questions.store');
-
-Route::post('/answers', [AnswerController::class, 'store'])->name('answers.store');
-Route::delete('/answers/{answer}', [AnswerController::class, 'destroy'])->name('answers.destroy');
-Route::put('/answers/{answer}', [AnswerController::class, 'update'])->name('answers.update');
-
-Route::match(['POST', 'PUT'], '/quiz/{quizId?}', [QuizController::class, 'saveQuiz'])->name('quiz.save');
-Route::delete('/quizzes/{id}', [QuizController::class, 'destroy'])->name('quizzes.destroy');
+Route::resource('questions', QuestionController::class)->names([
+    'update' => 'questions.update',
+    'store' => 'questions.store',
+    'destroy' => 'questions.destroy',
+]);;
 
 
+Route::resource('answers', AnswerController::class)->names([
+    'update' => 'answers.update',
+    'store' => 'answers.store',
+    'destroy' => 'answers.destroy',
+]);;
 
 
-Route::resource('completions', CompletionController::class);
-Route::post('/completions/{completion}/submit', [CompletionController::class, 'submit'])->name('completion.submit');
+Route::resource('completions', CompletionController::class)->names([
+    'update' => 'completion.update',
+]);;
+
 
 
