@@ -96,29 +96,25 @@ class CompletionController extends Controller
     {
         $validated = $request->validate([
             'answers' => 'required|array',
-    
         ]);
     
         try {
+            $completion->update(['finish' => now()]);
     
-            $completion->update(['finish'=>now()]);
             foreach ($completion->quiz->questions as $question) {
-                            
                 if (isset($validated['answers'][$question->id])) {
-                
                     $answerValue = $validated['answers'][$question->id];
+    
                     $completionQuestion = CompletionQuestion::create([
                         'completion_id' => $completion->id,
                         'question_description' => $question->question,
                     ]);
-                    
     
                     if (is_array($answerValue)) {
                         foreach ($answerValue as $answer) {
-    
                             CompletionAnswer::create([
                                 'completion_question_id' => $completionQuestion->id,
-                                'answer' => $answer ,
+                                'answer' => $answer,
                             ]);
                         }
                     } else {
@@ -130,6 +126,11 @@ class CompletionController extends Controller
                 }
             }
     
+            $quiz = $completion->quiz;
+            $quiz->update([
+                'amount_completions' => $quiz->amount_completions + 1,
+            ]);
+    
             return redirect()->route('completions.show', $completion->id)
                              ->with('success', 'Quiz completed successfully!');
         } catch (\Exception $e) {
@@ -139,7 +140,7 @@ class CompletionController extends Controller
             ])->withInput();
         }
     }
-
+    
     /**
      * Remove the specified resource from storage.
      */

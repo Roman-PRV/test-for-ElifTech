@@ -34,6 +34,7 @@
                 </div>
                 <p class="text-gray-600">{{ $quiz->description }}</p>
                 <p class="text-gray-600 text-sm my-2">Questions: {{ $quiz->amount_questions }}</p>
+                <p class="text-gray-600 text-sm my-2">Completions: {{ $quiz->amount_completions }}</p>
             </div>
         @endforeach
     </div>
