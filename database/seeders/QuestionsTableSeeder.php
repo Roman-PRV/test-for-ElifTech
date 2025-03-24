@@ -2,40 +2,25 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
+use App\Models\Quiz;
+use App\Models\Question;
 
 class QuestionsTableSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
-    public function run(): void
+    public function run()
     {
-            $quizes = DB::table('quizes')->get();
+        // Отримуємо всі Quiz
+        $quizzes = Quiz::all();
 
-
-            $exampleQuestions = [
-                'What is the capital of France?',
-                'Who wrote "Hamlet"?',
-                'What is the square root of 64?',
-                'Which planet is closest to the Sun?',
-                'What year did World War II end?',
-            ];
-    
-            $questionTypes = DB::table('question_types')->pluck('id')->toArray();
-    
-            foreach ($quizes as $quiz) {
-                foreach ($exampleQuestions as $question) {
-                    DB::table('questions')->insert([
-                        'quiz_id' => $quiz->id,
-                        'question' => $question,
-                        'type_id' => $questionTypes[array_rand($questionTypes)], 
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ]);
-                }
+        foreach ($quizzes as $quiz) {
+            for ($i = 1; $i <= 10; $i++) {
+                Question::create([
+                    'quiz_id' => $quiz->id,
+                    'question' => "Question $i", 
+                    'type_id' => rand(1, 3),   
+                ]);
             }
+        }
     }
 }

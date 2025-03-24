@@ -19,7 +19,7 @@ return new class extends Migration
             $table->datetime('finish')->nullable();
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('quiz_id')->references('id')->on('quizes')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('quiz_id')->references('id')->on('quizzes')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 

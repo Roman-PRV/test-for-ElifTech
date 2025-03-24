@@ -9,7 +9,7 @@ class Quiz extends Model
 {
     use HasFactory;
 
-    protected $table = 'quizes';
+    protected $table = 'quizzes';
 
     protected $guarded = [];
 

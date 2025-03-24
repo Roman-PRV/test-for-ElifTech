@@ -36,7 +36,7 @@ class CompletionController extends Controller
         try {
             // Валідація даних запиту
             $validated = $request->validate([
-                'quiz_id' => 'required|exists:quizes,id',
+                'quiz_id' => 'required|exists:quizzes,id',
             ]);
     
             // Знаходимо вікторину за ID
