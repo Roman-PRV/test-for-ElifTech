@@ -15,12 +15,14 @@
                     <div class="relative group">
                         <button
                             class="p-2 rounded-full bg-gray-200 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd"
-                                    d="M3 5h14a1 1 0 010 2H3a1 1 0 010-2zm0 5h14a1 1 0 010 2H3a1 1 0 010-2zm0 5h14a1 1 0 010-2z"
-                                    clip-rule="evenodd" />
-                            </svg>
+                            <div class="flex flex-col justify-center items-center space-y-1">
+                                <span class="block w-6 h-0.5 bg-gray-500"></span>
+                                <span class="block w-6 h-0.5 bg-gray-500"></span>
+                                <span class="block w-6 h-0.5 bg-gray-500"></span>
+                            </div>
                         </button>
+
+
                         <div
                             class="absolute right-0 mt-2 w-32 bg-white rounded-md shadow-lg hidden group-focus-within:block">
                             <a href="/quizzes/{{ $quiz->id }}/edit"

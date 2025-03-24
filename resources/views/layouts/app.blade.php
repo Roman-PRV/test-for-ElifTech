@@ -9,7 +9,7 @@
     <title>@yield('title', 'Questionnaire Builder App')</title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    --
+
 
 </head>
 
@@ -33,7 +33,10 @@
 
     <footer class="bg-blue-600 text-white p-4 mt-6">
         <div class="container mx-auto text-center">
-            <p>&copy; {{ date('Y') }} Questionnaire Builder App</p>
+            <p>&copy; {{ date('Y') }}
+                <a href="https://www.linkedin.com/in/prokopenko-roman/" target="_blank">
+                    Roman Prokopenko</a>
+            </p>
         </div>
     </footer>
 
