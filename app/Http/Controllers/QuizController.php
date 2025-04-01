@@ -2,11 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\QuizUpdateRequest;
 use App\Models\Quiz;
+use App\Services\QuizService;
 use Illuminate\Http\Request;
 
 class QuizController extends Controller
 {
+
+    protected $quizService;
+
+    public function __construct(QuizService $quizService)
+    {
+        $this->quizService = $quizService;
+    }
     /**
      * Display a listing of the resource.
      */
@@ -23,7 +32,6 @@ class QuizController extends Controller
      */
     public function create()
     {
-        
         $quiz = Quiz::create(['name' => 'Some quiz', 'description' => 'Some description']);
         return redirect()->route('quizzes.edit', ['quiz' => $quiz->id]);
     }
@@ -41,9 +49,7 @@ class QuizController extends Controller
      */
     public function show(Quiz $quiz)
     {
-        //$questionTypes = \App\Models\QuestionType::all();
-        //return view('quizzes.quiz', compact('quiz', 'questionTypes'));
-        //
+
     }
 
     /**
@@ -59,74 +65,14 @@ class QuizController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Quiz $quiz)
-
-    // ToDo to process into thin
+    public function update(QuizUpdateRequest $request, Quiz $quiz)
     {
         try {
-            $validatedData = $request->validate([
-                'quiz-name' => 'required',
-                'quiz-description' => 'required',
-                'questions' => 'required|array',
-                'questions.*.question' => 'required|string',
-                'questions.*.type_id' => 'required|integer',
-                'questions.*.answers' => 'nullable|array',
-                'questions.*.answers.*' => 'required|string',
-            ]);
-       
-            $quiz->update([
-                'name' => $validatedData['quiz-name'],
-                'description' => $validatedData['quiz-description']
-            ]);
-    
-            $processedQuestionIds = [];
-    
-      
-            foreach ($validatedData['questions'] as $questionId => $questionData) {
-                $question = $quiz->questions()->updateOrCreate(
-                    ['id' => $questionId],
-                    [
-                        'quiz_id' => $quiz->id,
-                        'question' => $questionData['question'],
-                        'type_id' => $questionData['type_id'],
-                    ]
-                );
-    
-                $processedQuestionIds[] = $question->id;
-    
-                $processedAnswerIds = [];
-    
-                if (!empty($questionData['answers'])) {
-                    foreach ($questionData['answers'] as $answerId => $answerText) {
-                        $answer = $question->answers()->updateOrCreate(
-                            ['id' => $answerId],
-                            ['answer' => $answerText]
-                        );
-    
-                        $processedAnswerIds[] = $answer->id;
-                    }
-                }
-    
-              
-                $question->answers()->whereNotIn('id', $processedAnswerIds)->delete();
-            }
-           $quiz->questions()->whereNotIn('id', $processedQuestionIds)->each(function ($question) {
-                $question->answers()->delete(); 
-                $question->delete(); 
-            });
-              
-            $amountQuestions = $quiz->questions()->count();
-            $quiz->update(['amount_questions' => $amountQuestions]);
-    
+            $this->quizService->updateQuiz($quiz, $request->validated());
             return response()->json([
                 'success' => true,
                 'message' => 'Quiz updated successfully!',
             ]);
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return response()->json([
-                'success' => false,
-                'errors' => $e->errors(), 
-            ], 422);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -136,30 +82,26 @@ class QuizController extends Controller
         }
     }
     
-    
-    
-
-    
 
     /**
      * Remove the specified resource from storage.
      */
 public function destroy(Quiz $quiz)
-{
-    try {
+    {
+      try {
         $quiz->delete();
         return response()->json([
             'success' => true,
             'message' => 'Quiz deleted successfully!',
         ]);
-    } catch (\Exception $e) {
-        return response()->json([
+        } catch (\Exception $e) {
+           return response()->json([
             'success' => false,
             'message' => 'Failed to delete quiz.',
             'error' => $e->getMessage(),
         ], 500);
+       }
     }
-}
 
 
     

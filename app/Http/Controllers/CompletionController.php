@@ -34,28 +34,22 @@ class CompletionController extends Controller
     public function store(Request $request)
     {
         try {
-            // Валідація даних запиту
             $validated = $request->validate([
                 'quiz_id' => 'required|exists:quizzes,id',
             ]);
     
-            // Знаходимо вікторину за ID
             $quiz = Quiz::findOrFail($validated['quiz_id']);
     
-            // Створюємо новий Completion
             $completion = Completion::create([
                 'quiz_id' => $quiz->id,
-                'user_id' => auth()->id()??1, // Використовується ID авторизованого користувача
-                'start' => now(),   // Поточна дата і час
+                'user_id' => auth()->id()??1,
+                'start' => now(), 
             ]);
-    
-            // Повертаємо JSON-відповідь про успіх
             return response()->json([
                 'success' => true,
                 'completion_id' => $completion->id,
             ]);
         } catch (\Exception $e) {
-            // Повертаємо JSON-відповідь про помилку
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to create completion.',
