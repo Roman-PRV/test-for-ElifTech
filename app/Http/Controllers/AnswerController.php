@@ -29,24 +29,20 @@ class AnswerController extends Controller
     public function store(Request $request)
     {
         try {
-            // Створюємо нову відповідь
+
             $answer = Answer::create([
                 'question_id' => $request->input('question_id'),
                 'answer' => 'Some text'
             ]);
-    
-            // Рендеримо шаблон для нової відповіді
             $html = view('answers.answer', compact('answer'))->render();
     
-            // Успішна відповідь із рендереним HTML
             return response()->json([
                 'success' => true,
                 'message' => 'Answer created successfully!',
-                'html' => $html, // HTML для відповіді
-                'answerId' => $answer->id // Дані нової відповіді
+                'html' => $html,
+                'answerId' => $answer->id 
             ]);
         } catch (\Exception $e) {
-            // У разі помилки
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to create answer.',
