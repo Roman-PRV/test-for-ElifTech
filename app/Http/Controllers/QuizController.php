@@ -32,7 +32,6 @@ class QuizController extends Controller
      */
     public function create()
     {
-        
         $quiz = Quiz::create(['name' => 'Some quiz', 'description' => 'Some description']);
         return redirect()->route('quizzes.edit', ['quiz' => $quiz->id]);
     }
@@ -88,21 +87,21 @@ class QuizController extends Controller
      * Remove the specified resource from storage.
      */
 public function destroy(Quiz $quiz)
-{
-    try {
+    {
+      try {
         $quiz->delete();
         return response()->json([
             'success' => true,
             'message' => 'Quiz deleted successfully!',
         ]);
-    } catch (\Exception $e) {
-        return response()->json([
+        } catch (\Exception $e) {
+           return response()->json([
             'success' => false,
             'message' => 'Failed to delete quiz.',
             'error' => $e->getMessage(),
         ], 500);
+       }
     }
-}
 
 
     
